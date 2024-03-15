@@ -6,7 +6,10 @@ def increase():
 
 def decrease():
     value = int(lbl_value["text"])
-    lbl_value["text"] = f"{value - 1}"
+    
+    # don't want the values to be negative
+    if value - 1 >= 0:
+        lbl_value["text"] = f"{value - 1}"
 
 def increment_pennies():
     value = int(lbl_value["text"])
@@ -18,6 +21,9 @@ def increment_pennies():
     pennies_count_label["text"] = f"{coin_counts[1]}"
 
     # calculate net balance
+    current_balance = int(balance_count_label["text"])
+    current_balance += 1 * value
+    balance_count_label["text"] = f"{current_balance}"
 
 def increment_nickels():
     value = int(lbl_value["text"])
@@ -29,6 +35,9 @@ def increment_nickels():
     nickels_count_label["text"] = f"{coin_counts[5]}"
 
     # calculate net balance
+    current_balance = int(balance_count_label["text"])
+    current_balance += 5 * value
+    balance_count_label["text"] = f"{current_balance}"
 
 def increment_dimes():
     value = int(lbl_value["text"])
@@ -40,6 +49,9 @@ def increment_dimes():
     dimes_count_label["text"] = f"{coin_counts[10]}"
 
     # calculate net balance
+    current_balance = int(balance_count_label["text"])
+    current_balance += 10 * value
+    balance_count_label["text"] = f"{current_balance}"
 
 def increment_quarters():
     value = int(lbl_value["text"])
@@ -51,6 +63,9 @@ def increment_quarters():
     quarters_count_label["text"] = f"{coin_counts[25]}"
 
     # calculate net balance
+    current_balance = int(balance_count_label["text"])
+    current_balance += 25 * value
+    balance_count_label["text"] = f"{current_balance}"
 
 def decrement_pennies():
     value = int(lbl_value["text"])
@@ -63,6 +78,10 @@ def decrement_pennies():
         pennies_count_label["text"] = f"{coin_counts[1]}"
 
         # calculate net balance
+        current_balance = int(balance_count_label["text"])
+        current_balance -= 1 * value
+        balance_count_label["text"] = f"{current_balance}"
+
 
 def decrement_nickels():
     value = int(lbl_value["text"])
@@ -75,6 +94,9 @@ def decrement_nickels():
         nickels_count_label["text"] = f"{coin_counts[5]}"
 
         # calculate net balance
+        current_balance = int(balance_count_label["text"])
+        current_balance -= 5 * value
+        balance_count_label["text"] = f"{current_balance}"
 
 def decrement_dimes():
     value = int(lbl_value["text"])
@@ -87,6 +109,9 @@ def decrement_dimes():
         dimes_count_label["text"] = f"{coin_counts[10]}"
 
         # calculate net balance
+        current_balance = int(balance_count_label["text"])
+        current_balance -= 10 * value
+        balance_count_label["text"] = f"{current_balance}"
 
 def decrement_quarters():
     value = int(lbl_value["text"])
@@ -99,6 +124,9 @@ def decrement_quarters():
         quarters_count_label["text"] = f"{coin_counts[25]}"
 
         # calculate net balance
+        current_balance = int(balance_count_label["text"])
+        current_balance -= 25 * value
+        balance_count_label["text"] = f"{current_balance}"
 
 
 coin_counts = {

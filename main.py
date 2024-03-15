@@ -138,9 +138,23 @@ coin_counts = {
 
 window = tk.Tk()
 
+# Set the title of the window
+window.title("Coin it!")
+
+# Set the color of the window to thistle
+window.configure(background="thistle")
+
+# header frame
+header_frame = tk.Frame(window, background="thistle")
+header_frame.grid(row=0, column=0, padx=10, pady=10)
+
+# Create a label for the header with the title of the app
+header_label = tk.Label(header_frame, bg="thistle", text="Coin it!", font=("Arial", 24,  "italic"), fg="gold")
+header_label.grid(row=0,column=0, padx=5, pady=5)
+
 # Top Frame
-top_frame = tk.Frame(window)
-top_frame.grid(row=0, column=0, padx=10, pady=10)
+top_frame = tk.Frame(window, bg="thistle")
+top_frame.grid(row=1, column=0, padx=10, pady=10)
 
 # Labels for coin types
 pennies_label = tk.Label(top_frame, text="Pennies")
@@ -175,8 +189,8 @@ balance_count_label = tk.Label(top_frame, text="0")
 balance_count_label.grid(row=4, column=1, padx=5, pady=5)
 
 # Bottom Frame
-bottom_frame = tk.Frame(window)
-bottom_frame.grid(row=1, column=0, padx=10, pady=10)
+bottom_frame = tk.Frame(window, bg="thistle")
+bottom_frame.grid(row=2, column=0, padx=10, pady=10)
 
 # Add Button Column
 add_pennies_button = tk.Button(bottom_frame, text="Add Pennies", command=increment_pennies)

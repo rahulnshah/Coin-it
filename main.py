@@ -128,6 +128,22 @@ def decrement_quarters():
         current_balance -= 25 * value
         balance_count_label["text"] = f"{current_balance}"
 
+def give_min_coins():
+    amount = int(amount_entry.get())
+    dp = [amount + 1] * (amount + 1)
+
+    # dp[0] is fewest number of coins we need to make up 0 cents, which is 0 coins 
+    dp[0] = 0
+
+    for i in range(1, len(dp)):
+        for coin_amount in coin_counts:
+            if coin_amount <= i:
+                dp[i] = min(dp[i], 1 + dp[i - coin_amount])
+
+    if dp[amount] != (amount + 1):
+        second_label["text"] = str(dp[amount])
+    else:
+        second_label["text"] = "-1"
 
 coin_counts = {
     1: 0,    # Pennies
@@ -144,6 +160,8 @@ window.title("Coin it!")
 # Set the color of the window to thistle
 window.configure(background="thistle")
 
+window.columnconfigure(0, weight=1)
+window.rowconfigure([0,1,2,3], weight=1)
 # header frame
 header_frame = tk.Frame(window, background="thistle")
 header_frame.grid(row=0, column=0, padx=10, pady=10)
@@ -254,5 +272,22 @@ take_dimes_button.grid(row=2, column=4, padx=5, pady=5)
 
 take_quarters_button = tk.Button(bottom_frame, text="Take Quarters", command=decrement_quarters)
 take_quarters_button.grid(row=3, column=4, padx=5, pady=5)
+
+summary_frame = tk.Frame(window, bg="thistle")
+summary_frame.grid(row=3, column=0, padx=10, pady=10)
+
+first_label = tk.Label(summary_frame, text="You need min. of")
+second_label = tk.Label(summary_frame, text="0")
+min_coins_label = tk.Label(summary_frame, text="coins to make ")
+amount_entry = tk.Entry(summary_frame, width=5, justify="center")
+third_label = tk.Label(summary_frame, text="cents.")
+give_min_coins_btn = tk.Button(summary_frame, text="Enter", command=give_min_coins)
+
+first_label.grid(row=0, column=0)
+second_label.grid(row=0, column=1)
+min_coins_label.grid(row=0, column=2)
+amount_entry.grid(row=0, column=3)
+third_label.grid(row=0, column=4)
+give_min_coins_btn.grid(row=0, column=5)
 
 window.mainloop()

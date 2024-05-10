@@ -145,6 +145,10 @@ def give_min_coins():
     else:
         second_label["text"] = "-1"
 
+def get_coin_combinations():
+    # get the length of 
+    min_coins_needed = second_label["text"]
+    
 coin_counts = {
     1: 0,    # Pennies
     5: 0,    # Nickels

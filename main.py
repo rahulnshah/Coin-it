@@ -221,12 +221,14 @@ for field, coin_amt in r.hscan_iter('user-session:123'):
     match coin_type:
         case "pennies":
             total_balance += value
-        case "nickles":
+        case "nickels":
             total_balance += 5 * value
         case "dimes":
             total_balance += 10 * value
         case _:
             total_balance += 25 * value
+
+
     
 balance_count_label = tk.Label(top_frame, text=f"{total_balance}")
 balance_count_label.grid(row=4, column=1, padx=5, pady=5)

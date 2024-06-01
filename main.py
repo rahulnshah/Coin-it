@@ -150,13 +150,6 @@ def give_min_coins():
 def get_coin_combinations():
     # get the length of 
     min_coins_needed = second_label["text"]
-    
-# coin_counts = {
-#     1: 0,    # Pennies
-#     5: 0,    # Nickels
-#     10: 0,   # Dimes
-#     25: 0    # Quarters
-# }
 
 # Connect to localhost on port 6379, set a value in Redis, and retrieve it. 
 r = redis.Redis(host='localhost', port=6379, decode_responses=True)

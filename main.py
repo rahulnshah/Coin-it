@@ -1,4 +1,5 @@
 import tkinter as tk
+import redis
 
 def increase():
     value = int(lbl_value["text"])
@@ -15,10 +16,10 @@ def increment_pennies():
     value = int(lbl_value["text"])
 
     # increment the count of pennies by value
-    coin_counts[1] += value
+    r.hincrby('user-session:123', 'pennies', value)
 
     # reset the text of pennies
-    pennies_count_label["text"] = f"{coin_counts[1]}"
+    pennies_count_label["text"] = f"{int(r.hget('user-session:123', 'pennies'))}"
 
     # calculate net balance
     current_balance = int(balance_count_label["text"])
@@ -29,10 +30,10 @@ def increment_nickels():
     value = int(lbl_value["text"])
 
     # increment the count of pennies by value
-    coin_counts[5] += value
+    r.hincrby('user-session:123', 'nickels', value)
 
     # reset the text of pennies
-    nickels_count_label["text"] = f"{coin_counts[5]}"
+    nickels_count_label["text"] = f"{int(r.hget('user-session:123', 'nickels'))}"
 
     # calculate net balance
     current_balance = int(balance_count_label["text"])
@@ -43,10 +44,10 @@ def increment_dimes():
     value = int(lbl_value["text"])
 
     # increment the count of pennies by value
-    coin_counts[10] += value
+    r.hincrby('user-session:123', 'dimes', value)
 
     # reset the text of pennies
-    dimes_count_label["text"] = f"{coin_counts[10]}"
+    dimes_count_label["text"] = f"{int(r.hget('user-session:123', 'dimes'))}"
 
     # calculate net balance
     current_balance = int(balance_count_label["text"])
@@ -57,10 +58,10 @@ def increment_quarters():
     value = int(lbl_value["text"])
 
     # increment the count of pennies by value
-    coin_counts[25] += value
+    r.hincrby('user-session:123', 'quarters', value)
 
     # reset the text of pennies
-    quarters_count_label["text"] = f"{coin_counts[25]}"
+    quarters_count_label["text"] = f"{int(r.hget('user-session:123', 'quarters'))}"
 
     # calculate net balance
     current_balance = int(balance_count_label["text"])
@@ -70,28 +71,27 @@ def increment_quarters():
 def decrement_pennies():
     value = int(lbl_value["text"])
 
-    if coin_counts[1] - value >= 0:
+    if int(r.hget('user-session:123', 'pennies')) - value >= 0:
         # increment the count of pennies by value
-        coin_counts[1] -= value
+        r.hincrby('user-session:123', 'pennies', -value)
 
         # reset the text of pennies
-        pennies_count_label["text"] = f"{coin_counts[1]}"
+        pennies_count_label["text"] = f"{int(r.hget('user-session:123', 'pennies'))}"
 
         # calculate net balance
         current_balance = int(balance_count_label["text"])
         current_balance -= 1 * value
         balance_count_label["text"] = f"{current_balance}"
 
-
 def decrement_nickels():
     value = int(lbl_value["text"])
 
-    if coin_counts[5] - value >= 0:
+    if int(r.hget('user-session:123', 'nickels')) - value >= 0:
         # increment the count of pennies by value
-        coin_counts[5] -= value
+        r.hincrby('user-session:123', 'nickels', -value)
 
         # reset the text of pennies
-        nickels_count_label["text"] = f"{coin_counts[5]}"
+        nickels_count_label["text"] = f"{int(r.hget('user-session:123', 'nickels'))}"
 
         # calculate net balance
         current_balance = int(balance_count_label["text"])
@@ -101,12 +101,12 @@ def decrement_nickels():
 def decrement_dimes():
     value = int(lbl_value["text"])
 
-    if coin_counts[10] - value >= 0:
+    if int(r.hget('user-session:123', 'dimes')) - value >= 0:
         # increment the count of pennies by value
-        coin_counts[10] -= value
+        r.hincrby('user-session:123', 'dimes', -value)
 
         # reset the text of pennies
-        dimes_count_label["text"] = f"{coin_counts[10]}"
+        dimes_count_label["text"] = f"{int(r.hget('user-session:123', 'dimes'))}"
 
         # calculate net balance
         current_balance = int(balance_count_label["text"])
@@ -116,12 +116,12 @@ def decrement_dimes():
 def decrement_quarters():
     value = int(lbl_value["text"])
 
-    if coin_counts[25] - value >= 0:
+    if int(r.hget('user-session:123', 'quarters')) - value >= 0:
         # increment the count of pennies by value
-        coin_counts[25] -= value
+        r.hincrby('user-session:123', 'quarters', -value)
 
         # reset the text of pennies
-        quarters_count_label["text"] = f"{coin_counts[25]}"
+        quarters_count_label["text"] = f"{int(r.hget('user-session:123', 'quarters'))}"
 
         # calculate net balance
         current_balance = int(balance_count_label["text"])
@@ -134,6 +134,8 @@ def give_min_coins():
 
     # dp[0] is fewest number of coins we need to make up 0 cents, which is 0 coins 
     dp[0] = 0
+
+    coin_counts = [1,5,10,25]
 
     for i in range(1, len(dp)):
         for coin_amount in coin_counts:
@@ -149,12 +151,15 @@ def get_coin_combinations():
     # get the length of 
     min_coins_needed = second_label["text"]
     
-coin_counts = {
-    1: 0,    # Pennies
-    5: 0,    # Nickels
-    10: 0,   # Dimes
-    25: 0    # Quarters
-}
+# coin_counts = {
+#     1: 0,    # Pennies
+#     5: 0,    # Nickels
+#     10: 0,   # Dimes
+#     25: 0    # Quarters
+# }
+
+# Connect to localhost on port 6379, set a value in Redis, and retrieve it. 
+r = redis.Redis(host='localhost', port=6379, decode_responses=True)
 
 window = tk.Tk()
 
@@ -195,19 +200,38 @@ current_balance_label = tk.Label(top_frame, text="Net Balance")
 current_balance_label.grid(row=4, column=0, padx=5, pady=5)
 
 # Labels for coin counts (initially set to 0)
-pennies_count_label = tk.Label(top_frame, text="0")
+pennies_count_label = tk.Label(top_frame, text=f"{int(r.hget('user-session:123', 'pennies'))}")
 pennies_count_label.grid(row=0, column=1, padx=5, pady=5)
 
-nickels_count_label = tk.Label(top_frame, text="0")
+nickels_count_label = tk.Label(top_frame, text=f"{int(r.hget('user-session:123', 'nickels'))}")
 nickels_count_label.grid(row=1, column=1, padx=5, pady=5)
 
-dimes_count_label = tk.Label(top_frame, text="0")
+dimes_count_label = tk.Label(top_frame, text=f"{int(r.hget('user-session:123', 'dimes'))}")
 dimes_count_label.grid(row=2, column=1, padx=5, pady=5)
 
-quarters_count_label = tk.Label(top_frame, text="0")
+quarters_count_label = tk.Label(top_frame, text=f"{int(r.hget('user-session:123', 'quarters'))}")
 quarters_count_label.grid(row=3, column=1, padx=5, pady=5)
 
-balance_count_label = tk.Label(top_frame, text="0")
+# get total balance
+stored_dict = {str(key): int(value) for key, value in r.hgetall('user-session:123').items()}
+
+total_balance = 0
+
+for key, value in stored_dict.items():
+    match key:
+        case "pennies":
+            total_balance += value
+
+        case "nickles":
+            total_balance += 5 * value
+
+        case "dimes":
+            total_balance += 10 * value
+        
+        case _:
+            total_balance += 25 * value
+    
+balance_count_label = tk.Label(top_frame, text=f"{total_balance}")
 balance_count_label.grid(row=4, column=1, padx=5, pady=5)
 
 # Bottom Frame

@@ -213,21 +213,18 @@ quarters_count_label = tk.Label(top_frame, text=f"{int(r.hget('user-session:123'
 quarters_count_label.grid(row=3, column=1, padx=5, pady=5)
 
 # get total balance
-stored_dict = {str(key): int(value) for key, value in r.hgetall('user-session:123').items()}
-
 total_balance = 0
 
-for key, value in stored_dict.items():
-    match key:
+for field, coin_amt in r.hscan_iter('user-session:123'):
+    coin_type = str(field)
+    value = int(coin_amt)
+    match coin_type:
         case "pennies":
             total_balance += value
-
         case "nickles":
             total_balance += 5 * value
-
         case "dimes":
             total_balance += 10 * value
-        
         case _:
             total_balance += 25 * value
     
@@ -260,33 +257,6 @@ lbl_value.grid(row=0, column=2, padx=5, pady=5)
 
 btn_decrease = tk.Button(bottom_frame, text="-", command=decrease)
 btn_decrease.grid(row=0, column=3, padx=5, pady=5)
-
-# plus_nickels_button = tk.Button(bottom_frame, text="+", command=increment_nickels)
-# plus_nickels_button.grid(row=1, column=1, padx=5, pady=5)
-
-# # labels_nickels = tk.Label(bottom_frame, text="0")
-# # labels_nickels.grid(row=1, column=2, padx=5, pady=5)
-
-# minus_nickels_button = tk.Button(bottom_frame, text="-", command=decrement_nickels)
-# minus_nickels_button.grid(row=1, column=3, padx=5, pady=5)
-
-# plus_dimes_button = tk.Button(bottom_frame, text="+", command=increment_dimes)
-# plus_dimes_button.grid(row=2, column=1, padx=5, pady=5)
-
-# # labels_dimes = tk.Label(bottom_frame, text="0")
-# # labels_dimes.grid(row=2, column=2, padx=5, pady=5)
-
-# minus_dimes_button = tk.Button(bottom_frame, text="-", command=decrement_dimes)
-# minus_dimes_button.grid(row=2, column=3, padx=5, pady=5)
-
-# plus_quarters_button = tk.Button(bottom_frame, text="+", command=increment_quarters)
-# plus_quarters_button.grid(row=3, column=1, padx=5, pady=5)
-
-# # labels_quarters = tk.Label(bottom_frame, text="0")
-# # labels_quarters.grid(row=3, column=2, padx=5, pady=5)
-
-# minus_quarters_button = tk.Button(bottom_frame, text="-", command=decrement_quarters)
-# minus_quarters_button.grid(row=3, column=3, padx=5, pady=5)
 
 # Take Button Column
 take_pennies_button = tk.Button(bottom_frame, text="Take Pennies", command=decrement_pennies)

@@ -1,9 +1,16 @@
+import os
 import tkinter as tk
 import redis
 
 class CoinApp(tk.Tk):
+
+    # Get environment variables
+    redis_host = os.getenv('REDIS_HOST')
+    redis_port = os.getenv('REDIS_PORT')
+    redis_password = os.getenv('REDIS_PASSWORD')
+
     # Class-level Redis client
-    redis_client = redis.Redis(host='localhost', port=6379, decode_responses=True)
+    redis_client = redis.Redis(password=redis_password, host=redis_host, port=int(redis_port), username='default', decode_responses=True)
 
     def __init__(self):
         super().__init__()

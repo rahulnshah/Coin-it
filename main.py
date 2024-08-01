@@ -10,7 +10,7 @@ class CoinApp(tk.Tk):
     redis_password = os.getenv('REDIS_PASSWORD')
 
     # Class-level Redis client
-    redis_client = redis.Redis(password=redis_password, host=redis_host, port=int(redis_port), username='default', decode_responses=True)
+    redis_client = redis.Redis(password=redis_password, host=redis_host, port=int(redis_port), decode_responses=True)
 
     def __init__(self):
         super().__init__()

@@ -72,7 +72,7 @@ class CoinApp(tk.Tk):
         tk.Label(self.summary_frame, text="coins to make ").grid(row=0, column=2)
         self.amount_entry.grid(row=0, column=3)
         tk.Label(self.summary_frame, text="cents.").grid(row=0, column=4)
-        tk.Button(self.summary_frame, text="Enter", command=self.give_min_coins).grid(row=0, column=5)
+        tk.Button(self.summary_frame, text="Enter", command=self.show_min_coins).grid(row=0, column=5)
         self.combninations_label = tk.Label(self.summary_frame, text="Combinations will be shown in the large text box below.")
         self.combninations_label.grid(row=1, column=0, columnspan=6)
         self.combinations_text = tk.Text(self.summary_frame, height=10, width=50)
@@ -120,32 +120,33 @@ class CoinApp(tk.Tk):
         amount = int(self.amount_entry.get())
         dp = [amount + 1] * (amount + 1)
         dp[0] = 0
-        coin_counts = [1, 5, 10, 25]
 
         for i in range(1, len(dp)):
-            for coin_amount in coin_counts:
+            for coin_amount in self.coin_values:
                 if coin_amount <= i:
                     dp[i] = min(dp[i], 1 + dp[i - coin_amount])
 
         if dp[amount] != (amount + 1):
-            self.min_coins_label["text"] = str(dp[amount])
-        else:
-            self.min_coins_label["text"] = "-1"
+            return dp[amount]
+        return -1
+   
+    def show_min_coins(self):
+        min_coin = self.give_min_coins()
+        self.min_coins_label["text"] = str(min_coin)
 
     def give_combinations(self):
         target = int(self.amount_entry.get())
         res = []
-        candidates = [1, 5, 10, 25]
 
         def dfs(i, curr, total):
             if total == target:
                 res.append(curr[:])
                 return
-            if total > target or i == len(candidates):
+            if total > target or i == len(self.coin_values):
                 return
 
-            curr.append(candidates[i])
-            dfs(i, curr, total + candidates[i])
+            curr.append(self.coin_values[i])
+            dfs(i, curr, total + self.coin_values[i])
             curr.pop()
             dfs(i + 1, curr, total)
 

@@ -1,6 +1,9 @@
 import os
 import tkinter as tk
 import redis
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class CoinApp(tk.Tk):
 
@@ -69,7 +72,13 @@ class CoinApp(tk.Tk):
         tk.Label(self.summary_frame, text="coins to make ").grid(row=0, column=2)
         self.amount_entry.grid(row=0, column=3)
         tk.Label(self.summary_frame, text="cents.").grid(row=0, column=4)
-        tk.Button(self.summary_frame, text="Enter", command=self.give_min_coins).grid(row=0, column=5)
+        tk.Button(self.summary_frame, text="Enter", command=self.show_min_coins).grid(row=0, column=5)
+        self.combninations_label = tk.Label(self.summary_frame, text="Combinations will be shown in the large text box below.")
+        self.combninations_label.grid(row=1, column=0, columnspan=6)
+        self.combinations_text = tk.Text(self.summary_frame, height=10, width=50)
+        self.combinations_text.grid(row=2, column=0, columnspan=6, padx=5, pady=5)
+        self.combinations_button = tk.Button(self.summary_frame, text="Show Combinations", command=self.show_combinations)
+        self.combinations_button.grid(row=3, column=0, columnspan=6)
 
     def increase(self):
         value = int(self.value_label["text"])
@@ -111,17 +120,50 @@ class CoinApp(tk.Tk):
         amount = int(self.amount_entry.get())
         dp = [amount + 1] * (amount + 1)
         dp[0] = 0
-        coin_counts = [1, 5, 10, 25]
 
         for i in range(1, len(dp)):
-            for coin_amount in coin_counts:
+            for coin_amount in self.coin_values:
                 if coin_amount <= i:
                     dp[i] = min(dp[i], 1 + dp[i - coin_amount])
 
         if dp[amount] != (amount + 1):
-            self.min_coins_label["text"] = str(dp[amount])
-        else:
-            self.min_coins_label["text"] = "-1"
+            return dp[amount]
+        return -1
+   
+    def show_min_coins(self):
+        min_coin = self.give_min_coins()
+        self.min_coins_label["text"] = str(min_coin)
+
+    def give_combinations(self):
+        target = int(self.amount_entry.get())
+        res = []
+
+        def dfs(i, curr, total):
+            if total == target:
+                res.append(curr[:])
+                return
+            if total > target or i == len(self.coin_values):
+                return
+
+            curr.append(self.coin_values[i])
+            dfs(i, curr, total + self.coin_values[i])
+            curr.pop()
+            dfs(i + 1, curr, total)
+
+        dfs(0, [], 0)
+        return res
+    
+    def show_combinations(self):
+        combinations = self.give_combinations()
+        if(len(combinations) == 1 and len(combinations[0]) == 0):
+            self.combinations_text.delete(1.0, tk.END)
+            self.combinations_text.insert(tk.END, "No combinations found.\n")
+        elif combinations:
+            self.combinations_text.delete(1.0, tk.END)
+            for combo in combinations:
+                self.combinations_text.insert(tk.END, f"{combo}\n")
+            
+
 
 if __name__ == "__main__":
     app = CoinApp()
